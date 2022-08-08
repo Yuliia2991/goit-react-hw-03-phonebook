@@ -22,17 +22,19 @@ export class App extends Component {
   addContact = ({ name, number }) => {
     const { contacts } = this.state;
     const normalizedName = name.toLowerCase();
-    const newContact = {
+   
+    if (contacts.find(contact => contact.name.toLowerCase() === normalizedName)) {
+      alert(`${name} is already in contacts`);
+      return;
+    } 
+    
+     const newContact = {
           id: nanoid(),
           name,
           number,
     };
-    
-    const duplicateName = contacts.find(contact => contact.name.toLowerCase() === normalizedName);
       
-    duplicateName
-      ? alert(`${name} is already in contacts`)
-      : this.setState(({contacts}) => ({
+     this.setState(({contacts}) => ({
       contacts: [...contacts, newContact]
     }))
   };
@@ -44,10 +46,6 @@ export class App extends Component {
       contact.name.toLowerCase().includes(normalizedFilter)
     );
   };
-
-  // checkContact = () => {
-
-  // }
 
   render() {
     const { filter } = this.state;
