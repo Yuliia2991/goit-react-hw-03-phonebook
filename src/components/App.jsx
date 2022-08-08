@@ -3,6 +3,7 @@ import { Component } from 'react';
 import { ContactForm } from './ContactForm/ContactForm';
 import { ContactsList } from './ContactList/ContactList';
 import { Filter } from './Filter/Filter';
+import css from './App.module.css';
 
 export class App extends Component {
   state = {
@@ -22,21 +23,23 @@ export class App extends Component {
   addContact = ({ name, number }) => {
     const { contacts } = this.state;
     const normalizedName = name.toLowerCase();
-   
-    if (contacts.find(contact => contact.name.toLowerCase() === normalizedName)) {
+
+    if (
+      contacts.find(contact => contact.name.toLowerCase() === normalizedName)
+    ) {
       alert(`${name} is already in contacts`);
       return;
-    } 
-    
-     const newContact = {
-          id: nanoid(),
-          name,
-          number,
+    }
+
+    const newContact = {
+      id: nanoid(),
+      name,
+      number,
     };
-      
-     this.setState(({contacts}) => ({
-      contacts: [...contacts, newContact]
-    }))
+
+    this.setState(({ contacts }) => ({
+      contacts: [...contacts, newContact],
+    }));
   };
 
   getFilteredContacts = () => {
@@ -47,19 +50,28 @@ export class App extends Component {
     );
   };
 
+  deleteContact = contactId => {
+    this.setState(({ contacts }) => ({
+      contacts: contacts.filter(contact => contact.id !== contactId),
+    }));
+  };
+
   render() {
     const { filter } = this.state;
 
     return (
-      <div>
-        <h1>Phonebook</h1>
+      <section className={css.phonebook}>
+        <h1 className={css.phonebook__title}>Phonebook</h1>
         <ContactForm onSubmit={this.addContact} />
 
-        <h2>Contacts</h2>
+        <h2 className={css.contacts}>Contacts</h2>
         <Filter value={filter} onChange={this.changeFilter}></Filter>
 
-        <ContactsList contacts={this.getFilteredContacts()} />
-      </div>
+        <ContactsList
+          contacts={this.getFilteredContacts()}
+          onDelete={this.deleteContact}
+        />
+      </section>
     );
   }
 }
